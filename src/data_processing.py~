@@ -81,6 +81,38 @@ def process_chunk(chunk, label):
     chunk_copy['class'] = label2id[label.capitalize()]
     return chunk_copy[['text', 'labels', 'class']]
 
+def process_batch(examples, label_name='Environmental'):
+    # Clean text
+    cleaned_texts = [clean_text(text) for text in examples["text"]]
+    cleaned_texts_vi = [clean_text(text) for text in examples["vi"]]
+    # cleaned_texts = examples["text"]
+
+    # Create label and class columns
+    labels = [label_name] * len(cleaned_texts)
+    classes = [label2id[label_name.capitalize()]] * len(cleaned_texts)
+    examples["text"] = cleaned_texts
+    examples["text_vi"] = cleaned_texts_vi
+    examples["labels"] = labels
+    examples["class"] = classes
+
+    # return examples
+    return {
+            "text": cleaned_texts,
+            "text_vi": cleaned_texts_vi,
+           "labels": labels,
+           "class": classes
+           }
+
+
+def map_func(ds, func, ctg, batch_size, num_proc):
+    return ds.map(
+        lambda examples: func(examples, ctg),
+        # process_batch,
+        batched=True,
+        batch_size=batch_size,
+        num_proc=num_proc,
+        keep_in_memory=True
+    )
 
 def esg_large_datasets(n_jobs=48, batch_size=1024*2, seed=42, test_size=0.05, working_dir='./data'):
     
