@@ -1,0 +1,10 @@
+torch==2.6.0 torchvision torchaudio -U
+transformers==4.51.0
+liger-kernel
+deepspeed
+accelerate==1.7.0
+optimum
+flash-attn --no-build-isolation
+trl
+huggingface_hub[hf_xet]
+huggingface_hub[hf_transfer]
